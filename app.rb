@@ -2,6 +2,7 @@ require 'sinatra/base'
 require "sinatra/reloader" 
 
 
+
 class Battle < Sinatra::Base
   enable :sessions
 
@@ -13,23 +14,46 @@ class Battle < Sinatra::Base
     erb :index
   end
 
-  
-
-  get '/play' do 
-    @p1_name = session[:p1_name]
-    @p2_name = session[:p2_name]
-    erb :player_names
-    
-
-  end
-
   post '/names' do
     
-    session[:p1_name] = params[:p1_name]
-    session[:p2_name] = params[:p2_name]
+    $player1 = Player.new(params[:p1_name])
+    $player2 = Player.new(params[:p2_name])
+
      #storing them in sessions instead of assigning instance variables
-     redirect '/play'   
+     redirect '/play'
+
+     #we want the user to:
+
+     #submit the form to post '/names'
+     #extract the submitted names from the params into the session
+     #redirect to get '/play'
+     #extract the names from the session to instance variables
+     
+
   end
+
+  get '/play' do 
+    @p1_name = $player1.name
+    @p2_name = $player2.name
+    erb :play
+
+  end
+
+
+  get '/attack' do #page that displays p1 attacked p2
+    @p1_name = $player1.name
+    @p2_name = $player2.name
+    erb :attack
+  end
+
+
+
+
+
+
+
+
+
 
   #start server if ruby file executed directly 
 
